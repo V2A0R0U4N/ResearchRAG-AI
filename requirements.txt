@@ -1,0 +1,12 @@
+streamlit
+python-dotenv
+langchain>=0.1.17
+langchain-community>=0.0.25
+langchain-openai>=0.0.6
+langchain-huggingface>=0.0.3
+faiss-cpu
+sentence-transformers
+unstructured
+requests
+tqdm
+beautifulsoup4

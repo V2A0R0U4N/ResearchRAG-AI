@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# Environment Variables
+.env
+
+# Local Stores
+*.pkl
+faiss_store_*.pkl
+local_faiss_index/
+
+# OS
+.DS_Store

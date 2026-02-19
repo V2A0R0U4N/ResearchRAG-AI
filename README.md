@@ -1,65 +1,170 @@
-# ResearchRAG-AI
-![image](https://github.com/user-attachments/assets/f11f6e51-9f09-4939-ace6-128b07c368b3)
+# 📘 ResearchRAG-AI — Advanced AI Research Assistant
 
+> An intelligent, document-grounded RAG (Retrieval-Augmented Generation) system that answers questions **only** from the documents you provide — with **zero hallucination**.
 
+![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.x-red?logo=streamlit)
+![LangChain](https://img.shields.io/badge/LangChain-0.1+-green)
+![Groq](https://img.shields.io/badge/LLM-Groq%20Llama%203.1-orange)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## Features
+---
 
-- Add one or more article URLs to fetch content dynamically.
-- Process content using **LangChain's UnstructuredURLLoader**.
-- Clean, split, and embed article content using **HuggingFace Sentence Transformers**.
-- Store embedding vectors using **FAISS** for efficient semantic retrieval.
-- Interact with **DeepSeek LLM** through a sleek Streamlit interface to ask research questions.
-- Get structured answers and source-linked insights.
-- Reuse embeddings with a locally stored FAISS `.pkl` file.
+## ✨ Features
 
-## 🔧 Installation
+| Feature | Description |
+|---|---|
+| 🔗 **Multi-Source Ingestion** | Load from URLs, PDFs, DOCX, and TXT files simultaneously |
+| 🔀 **Hybrid Search** | BM25 (keyword) + FAISS (semantic) via `EnsembleRetriever` |
+| 🧠 **6-Layer Anti-Hallucination** | Pipeline to detect and block fabricated answers |
+| 🤖 **LLM Intent Classifier** | AI-powered check to reject nonsensical/off-topic questions |
+| 📚 **Source Citations** | Every answer cites the exact document/URL it came from |
+| ☁️ **Cloud + Local LLM** | Switch between Groq API (cloud) and Ollama (local) |
 
-1. **Clone this repository** to your local machine:
-   ```bash
-   git clone https://github.com/your-username/ResearchRAG-AI.git
-   
-2. Navigate to the project folder:
-   ```bash
-   cd ResearchRAG-AI
-3. Install the required packages using pip:
-  ```bash
-  pip install -r requirements.txt
+---
+
+## 🛡️ Anti-Hallucination Pipeline (6 Layers)
+
 ```
-4. Create a .env file in the root directory and add your DeepSeek API key:
-   ```bash
-   OPENAI_API_KEY=your_deepseek_api_key
-   OPENAI_API_BASE=https://api.deepseek.com
-   ```
+User Query
+    ↓
+Layer 1    → Regex Guard         (blocks greetings, slurs, identity questions)
+    ↓
+Layer 1.5  → LLM Intent Check    (RESEARCH / MIXED / NONSENSE classifier)
+    ↓
+Layer 2    → FAISS Relevance Gate (rejects if no document chunk is close enough)
+    ↓
+Layer 3    → Hybrid Retrieval    (60% FAISS semantic + 40% BM25 keyword)
+    ↓
+Layer 4    → Strict Prompt       (LLM forbidden from using external knowledge)
+    ↓
+Layer 5    → Post-Processing     (catches any "no info" leakage in LLM response)
+    ↓
+    ✅ Grounded Answer with Citations
+```
 
-## 🚀 Usage
+---
 
-1. Run the Streamlit App
-   ```bash
-   streamlit run main.py
-   ```
-2. The app will open in your browser.
-3. In the sidebar:
-   
-   - Enter article URLs (up to 3 or more if extended).
+## 🤖 LLM Providers
 
-   - Click Analyze Articles to fetch, split, embed, and index the content.
+### ☁️ Cloud — Groq API (Llama 3.1 8B Instant)
+- **Get your free API key:** [https://console.groq.com/home](https://console.groq.com/home)
+- Fast inference, 14,400 requests/day free tier
+- Model: `llama-3.1-8b-instant`
 
-4. On the right side:
+### 🖥️ Local — Ollama (Llama 3.1)
+- **Install Ollama:** [https://ollama.ai](https://ollama.ai)
+- Pull the model: `ollama pull llama3.1`
+- Runs 100% offline, no API key needed
 
-   - Enter your research question.
+---
 
-   - Click Submit Question to get answers based on the processed articles.
+## 🚀 Setup & Run
 
-  ## 🧪 Example Articles Used<br>
-  
-  -  https://www.moneycontrol.com/news/business/markets/taking-stock-market-ends-higher-amid-positive-global-cues-12568811.html  
-  - https://www.econlib.org/library/Enc/StockMarket.html
+### 1. Clone the repository
+```bash
+git clone https://github.com/V2A0R0U4N/ResearchRAG-AI.git
+cd ResearchRAG-AI
+```
 
-## Project Structure
-- main.py: The main Streamlit application script.
-- requirements.txt: A list of required Python packages for the project.
-- faiss_store_openai.pkl: A pickle file to store the FAISS index.
-- .env: Configuration file for storing your OpenAI API key.
+### 2. Create a virtual environment
+```bash
+python3 -m venv venv
+source venv/bin/activate        # Mac/Linux
+# venv\Scripts\activate         # Windows
+```
 
+### 3. Install dependencies
+```bash
+pip install -r requirements.txt
+```
 
+### 4. Set up your API key
+Create a `.env` file in the project root:
+```env
+GROQ_API_KEY=your_groq_api_key_here
+OLLAMA_BASE_URL=http://localhost:11434    # optional, only for local Ollama
+```
+Get your Groq API key for free at: [https://console.groq.com/home](https://console.groq.com/home)
+
+### 5. Run the app
+```bash
+streamlit run main.py
+```
+
+---
+
+## 📦 Requirements
+
+```
+streamlit
+python-dotenv
+langchain>=0.1.17
+langchain-community>=0.0.25
+langchain-openai>=0.0.6
+langchain-huggingface>=0.0.3
+langchain-groq>=0.1.0
+langchain-ollama>=0.1.0
+langchain-groq>=0.1.0
+faiss-cpu
+sentence-transformers
+unstructured
+pypdf>=3.0.0
+docx2txt>=0.8
+rank_bm25>=0.2.2
+requests
+tqdm
+beautifulsoup4
+```
+
+---
+
+## 📁 Project Structure
+
+```
+ResearchRAG-AI/
+├── main.py              # Streamlit app — full RAG pipeline
+├── query_guard.py       # Layer 1 regex guard + Layer 2 relevance gate
+├── requirements.txt     # Python dependencies
+├── .env                 # API keys (not committed to git)
+├── .gitignore           # Excludes venv, .env, .pkl files
+└── README.md
+```
+
+---
+
+## 🧪 How to Use
+
+1. **Add sources** — Paste article URLs (one per field) or upload PDF/DOCX/TXT files
+2. **Click "Process Research Material"** — Documents are chunked, embedded, and indexed
+3. **Ask a question** — Type a specific research question about your documents
+4. **Get a grounded answer** — The system retrieves relevant chunks and generates a cited response
+
+> **Note:** The system will politely decline if your question is off-topic, nonsensical, or not covered in the provided documents.
+
+---
+
+## 🔧 Configuration
+
+| Parameter | Default | Description |
+|---|---|---|
+| LLM Temperature | `0.1` | Low for factual accuracy |
+| Chunk Size | `600` chars | Document splitting size |
+| Chunk Overlap | `150` chars | Context continuity |
+| Retrieval k | `8` | Chunks fetched per query |
+| FAISS Threshold | `1.8` | L2 distance cutoff for relevance |
+| Hybrid Weights | `60/40` | FAISS semantic / BM25 keyword |
+
+---
+
+## ⚠️ Important Notes
+
+- The `.env` file with your API keys is **never** committed to GitHub (protected by `.gitignore`)
+- The **Local (Ollama)** option will not work on Streamlit Community Cloud — use Cloud (Groq) for deployments
+- After restarting the app, you need to **re-process** your documents (the vector index is rebuilt in memory)
+
+---
+
+## 📄 License
+
+MIT License — free to use, modify, and distribute.

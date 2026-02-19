@@ -10,3 +10,8 @@ unstructured
 requests
 tqdm
 beautifulsoup4
+langchain-ollama>=0.1.0
+langchain-groq>=0.1.0
+pypdf>=3.0.0
+docx2txt>=0.8
+rank_bm25>=0.2.2

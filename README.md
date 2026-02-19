@@ -157,14 +157,6 @@ ResearchRAG-AI/
 
 ---
 
-## ⚠️ Important Notes
-
-- The `.env` file with your API keys is **never** committed to GitHub (protected by `.gitignore`)
-- The **Local (Ollama)** option will not work on Streamlit Community Cloud — use Cloud (Groq) for deployments
-- After restarting the app, you need to **re-process** your documents (the vector index is rebuilt in memory)
-
----
-
 ## 📄 License
 
 MIT License — free to use, modify, and distribute.
